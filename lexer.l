@@ -5,6 +5,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
+	#include "symtab.c"
 	int lineno = 1; // initialize to 1
 	void ret_print(char *token_type);
 	void yyerror();
@@ -76,7 +77,8 @@ STRING		\"{print}*\"
 "&"				{ ret_print("REFER"); }
 
 
-{ID} 			{ ret_print("ID"); }
+{ID} 			{ insert(yytext, strlen(yytext), UNDEF, lineno);
+					  ret_print("ID"); }
 {ICONST} 		{ ret_print("ICONST"); }
 {FCONST} 		{ ret_print("FCONST"); }
 {CCONST} 		{ ret_print("CCONST"); }
@@ -100,8 +102,20 @@ void yyerror(char *message){
 }
 
 int main(int argc, char *argv[]){
-	yyin = fopen(argv[1], "r");
-	yylex();
-	fclose(yyin);
-	return 0;
+	 // initialize symbol table
+        init_hash_table();
+
+        // open input file
+        yyin = fopen(argv[1], "r");
+
+        // lexical analysis
+        yylex();
+        fclose(yyin);
+
+        // symbol table dump
+        yyout = fopen("lexSymbol.out", "w");
+        symtab_dump(yyout);
+        fclose(yyout);
+
+        return 0;
 }

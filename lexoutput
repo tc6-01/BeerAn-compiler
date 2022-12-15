@@ -1,27 +1,35 @@
 yytext: int	token: KEYWORD_INT	lineno: 1
+Inserted a for the first time with linenumber 1!
 yytext: a	token: ID	lineno: 1
 yytext: ;	token: SEMI	lineno: 1
 yytext: int	token: KEYWORD_INT	lineno: 2
+Inserted get for the first time with linenumber 2!
 yytext: get	token: ID	lineno: 2
 yytext: (	token: LPAREN	lineno: 2
 yytext: int	token: KEYWORD_INT	lineno: 2
+Found a again at line 2!
 yytext: a	token: ID	lineno: 2
 yytext: ,	token: COMMA	lineno: 2
 yytext: int	token: KEYWORD_INT	lineno: 2
+Inserted b for the first time with linenumber 2!
 yytext: b	token: ID	lineno: 2
 yytext: )	token: RPAREN	lineno: 2
 yytext: {	token: LBRACE	lineno: 2
 yytext: return	token: KEYWORD_RETURN	lineno: 3
+Found a again at line 3!
 yytext: a	token: ID	lineno: 3
 yytext: *	token: MULOP	lineno: 3
+Found b again at line 3!
 yytext: b	token: ID	lineno: 3
 yytext: ;	token: SEMI	lineno: 3
 yytext: }	token: RBRACE	lineno: 4
 yytext: int	token: KEYWORD_INT	lineno: 5
+Inserted main for the first time with linenumber 5!
 yytext: main	token: ID	lineno: 5
 yytext: (	token: LPAREN	lineno: 5
 yytext: )	token: RPAREN	lineno: 5
 yytext: {	token: LBRACE	lineno: 5
+Inserted print for the first time with linenumber 6!
 yytext: print	token: ID	lineno: 6
 yytext: (	token: LPAREN	lineno: 6
 yytext: "this is a function"	token: STRING	lineno: 6
@@ -31,17 +39,23 @@ yytext: return	token: KEYWORD_RETURN	lineno: 7
 yytext: 0	token: ICONST	lineno: 7
 yytext: ;	token: SEMI	lineno: 7
 yytext: }	token: RBRACE	lineno: 8
+Found a again at line 9!
 yytext: a	token: ID	lineno: 9
 yytext: =	token: ASSIGN	lineno: 9
+Found get again at line 9!
 yytext: get	token: ID	lineno: 9
 yytext: (	token: LPAREN	lineno: 9
+Found a again at line 9!
 yytext: a	token: ID	lineno: 9
 yytext: ,	token: COMMA	lineno: 9
+Found a again at line 9!
 yytext: a	token: ID	lineno: 9
 yytext: )	token: RPAREN	lineno: 9
 yytext: ;	token: SEMI	lineno: 9
+Found print again at line 10!
 yytext: print	token: ID	lineno: 10
 yytext: (	token: LPAREN	lineno: 10
+Found a again at line 10!
 yytext: a	token: ID	lineno: 10
 yytext: )	token: RPAREN	lineno: 10
 yytext: ;	token: SEMI	lineno: 10
