@@ -614,18 +614,17 @@ char *yytext;
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
-	#include "symtab.c"
+	#include "symtab.h"
+	#include "parser.tab.h"
+	extern FILE *yyin;
+	extern FILE *yyout;
+	
 	int lineno = 1; // initialize to 1
 	void ret_print(char *token_type);
 	void yyerror();
-#line 622 "lex.yy.c"
+#line 626 "lex.yy.c"
 
-/*标识符（变量或者函数）*/
-/*整型常量*/
-/*浮点型常量*/
-/*注释*/
-/*字符串*/
-#line 629 "lex.yy.c"
+#line 628 "lex.yy.c"
 
 #define INITIAL 0
 #define ML_COMMENT 1
@@ -846,7 +845,7 @@ YY_DECL
 #line 31 "lexer.l"
 
 
-#line 850 "lex.yy.c"
+#line 849 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -937,211 +936,214 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 42 "lexer.l"
-{ ret_print("KEYWORD_CHAR"); }
+{ return CHAR; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 43 "lexer.l"
-{ ret_print("KEYWORD_INT"); }
+{ return INT; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 44 "lexer.l"
-{ ret_print("KEYWORD_FLOAT"); }
+{ return FLOAT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 45 "lexer.l"
-{ ret_print("KEYWORD_DOUBLE"); }
+{ return DOUBLE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 46 "lexer.l"
-{ ret_print("KEYWORD_IF"); }
+{ return IF; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 47 "lexer.l"
-{ ret_print("KEYWORD_ELSE"); }
+{ return ELSE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 48 "lexer.l"
-{ ret_print("KEYWORD_WHILE"); }
+{ return WHILE; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 49 "lexer.l"
-{ ret_print("KEYWORD_FOR"); }
+{ return FOR; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 50 "lexer.l"
-{ ret_print("KEYWORD_CONTINUE"); }
+{ return CONTINUE; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 51 "lexer.l"
-{ ret_print("KEYWORD_BREAK"); }
+{ return BREAK; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 52 "lexer.l"
-{ ret_print("KEYWORD_VOID"); }
+{ return VOID; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 53 "lexer.l"
-{ ret_print("KEYWORD_RETURN"); }
+{ return RETURN; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 56 "lexer.l"
-{ ret_print("ADDOP"); }
+{ return ADDOP; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 57 "lexer.l"
-{ ret_print("MULOP"); }
+{ return MULOP; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 58 "lexer.l"
-{ ret_print("DIVOP"); }
+{ return DIVOP; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 59 "lexer.l"
-{ ret_print("INCR"); }
+{ return INCR; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 60 "lexer.l"
-{ ret_print("OROP"); }
+{ return OROP; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 61 "lexer.l"
-{ ret_print("ANDOP"); }
+{ return ANDOP; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 62 "lexer.l"
-{ ret_print("NOTOP"); }
+{ return NOTOP; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 63 "lexer.l"
-{ ret_print("EQUOP"); }
+{ return EQUOP; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 64 "lexer.l"
-{ ret_print("RELOP"); }
+{ return RELOP; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 67 "lexer.l"
-{ ret_print("LPAREN"); }
+{ return LPAREN; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 68 "lexer.l"
-{ ret_print("RPAREN"); }
+{ return RPAREN; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 69 "lexer.l"
-{ ret_print("LBRACK"); }
+{ return RBRACK; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 70 "lexer.l"
-{ ret_print("RBRACK"); }
+{ return LBRACK; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 71 "lexer.l"
-{ ret_print("LBRACE"); }
+{ return LBRACE; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 72 "lexer.l"
-{ ret_print("RBRACE"); }
+{ return RBRACE; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 73 "lexer.l"
-{ ret_print("SEMI"); }
+{ return SEMI; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 74 "lexer.l"
-{ ret_print("DOT"); }
+{ return DOT; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 75 "lexer.l"
-{ ret_print("COMMA"); }
+{ return COMMA; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 76 "lexer.l"
-{ ret_print("ASSIGN"); }
+{ return ASSIGN; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 77 "lexer.l"
-{ ret_print("REFER"); }
+{ return REFER; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 80 "lexer.l"
 { insert(yytext, strlen(yytext), UNDEF, lineno);
-					  ret_print("ID"); }
+        yylval.symtab_item = lookup(yytext);
+        return ID;
+        }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 82 "lexer.l"
-{ ret_print("ICONST"); }
+#line 84 "lexer.l"
+{ yylval.int_val   = atoi(yytext); return ICONST; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 83 "lexer.l"
-{ ret_print("FCONST"); }
+#line 85 "lexer.l"
+{ yylval.double_val = atof(yytext); return FCONST; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 84 "lexer.l"
-{ ret_print("CCONST"); }
+#line 86 "lexer.l"
+{ yylval.char_val  = yytext[0];    return CCONST; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 85 "lexer.l"
-{ ret_print("STRING"); }
+#line 87 "lexer.l"
+{ yylval.str_val = malloc(yyleng * sizeof(char));
+              strcpy(yylval.str_val, yytext);  return STRING; }
 	YY_BREAK
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 88 "lexer.l"
+#line 91 "lexer.l"
 { lineno += 1; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 89 "lexer.l"
+#line 92 "lexer.l"
 /* eat up whitespace */
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 91 "lexer.l"
+#line 94 "lexer.l"
 { yyerror("Unrecognized character"); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 93 "lexer.l"
+#line 96 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 1145 "lex.yy.c"
+#line 1147 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(ML_COMMENT):
 	yyterminate();
@@ -2147,34 +2149,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 93 "lexer.l"
+#line 96 "lexer.l"
 
-
-void ret_print(char *token_type){
-	printf("yytext: %s\ttoken: %s\tlineno: %d\n", yytext, token_type, lineno);
-}
-
-void yyerror(char *message){
-	printf("Error: \"%s\" in line %d. Token = %s\n", message, lineno, yytext);
-	exit(1);
-}
-
-int main(int argc, char *argv[]){
-	 // initialize symbol table
-        init_hash_table();
-
-        // open input file
-        yyin = fopen(argv[1], "r");
-
-        // lexical analysis
-        yylex();
-        fclose(yyin);
-
-        // symbol table dump
-        yyout = fopen("lexSymbol.out", "w");
-        symtab_dump(yyout);
-        fclose(yyout);
-
-        return 0;
-}
 
