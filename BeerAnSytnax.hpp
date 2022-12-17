@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_PARSER_TAB_H_INCLUDED
-# define YY_YY_PARSER_TAB_H_INCLUDED
+#ifndef YY_YY_BEERANSYTNAX_HPP_INCLUDED
+# define YY_YY_BEERANSYTNAX_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -49,43 +49,45 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    CHAR = 258,
-    INT = 259,
-    FLOAT = 260,
-    DOUBLE = 261,
-    IF = 262,
-    ELSE = 263,
-    WHILE = 264,
-    FOR = 265,
-    CONTINUE = 266,
-    BREAK = 267,
-    VOID = 268,
-    RETURN = 269,
-    ADDOP = 270,
-    MULOP = 271,
-    DIVOP = 272,
-    INCR = 273,
-    OROP = 274,
-    ANDOP = 275,
-    NOTOP = 276,
-    EQUOP = 277,
-    RELOP = 278,
-    LPAREN = 279,
-    RPAREN = 280,
-    LBRACK = 281,
-    RBRACK = 282,
-    LBRACE = 283,
-    RBRACE = 284,
-    SEMI = 285,
-    DOT = 286,
-    COMMA = 287,
-    ASSIGN = 288,
-    REFER = 289,
-    ID = 290,
-    ICONST = 291,
-    FCONST = 292,
-    CCONST = 293,
-    STRING = 294
+    TIDENTIFIER = 258,
+    TINTEGER = 259,
+    TDOUBLE = 260,
+    BEERAN = 261,
+    TYINT = 262,
+    TYDOUBLE = 263,
+    TYFLOAT = 264,
+    TYCHAR = 265,
+    TYBOOL = 266,
+    TYVOID = 267,
+    TYSTRING = 268,
+    TLPAREN = 269,
+    TRPAREN = 270,
+    TLBRACE = 271,
+    TRBRACE = 272,
+    TCOMMA = 273,
+    TFENHAO = 274,
+    TPLUS = 275,
+    TMINUS = 276,
+    TMUL = 277,
+    TDIV = 278,
+    TAND = 279,
+    TOR = 280,
+    TXOR = 281,
+    TMOD = 282,
+    TNOT = 283,
+    TSHIFTL = 284,
+    TSHIFTR = 285,
+    TCEQ = 286,
+    TCNE = 287,
+    TCLT = 288,
+    TCLE = 289,
+    TCGT = 290,
+    TCGE = 291,
+    TEQUAL = 292,
+    TIF = 293,
+    TELSE = 294,
+    TFOR = 295,
+    TRETURN = 296
   };
 #endif
 
@@ -93,15 +95,19 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 14 "parser.y"
+#line 15 "BeerAn.y"
 
-    char char_val;
-	int int_val;
-	double double_val;
-	char* str_val;
-	list_t* symtab_item;
+	WangBlock* block;
+	WangExpression* expr;
+	WangStatement* stmt;
+	WangIdentifier* ident;
+	WangVarDel* var_decl;
+	std::vector<shared_ptr<WangVarDel>>* varvec;
+	std::vector<shared_ptr<WangExpression>>* exprvec;
+	std::string* string;
+	int token;
 
-#line 105 "parser.tab.h"
+#line 111 "BeerAnSytnax.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -114,4 +120,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
+#endif /* !YY_YY_BEERANSYTNAX_HPP_INCLUDED  */
