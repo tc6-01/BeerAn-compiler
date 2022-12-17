@@ -12,7 +12,7 @@ LDFLAGS = `$(LLVMCONFIG) --ldflags` -lpthread -ldl -rdynamic -L/usr/local/lib
 LIBS = `$(LLVMCONFIG) --libs`
 
 clean:
-	$(RM) -rf grammar.cpp grammar.hpp compiler  tokens.cpp  $(OBJS)
+	$(RM) -rf BeerAnSytnax.cpp BeerAnLex.cpp *.hpp compiler $(OBJS)
 
 
 CodeGen.cpp: CodeGen.h ASTNodes.h

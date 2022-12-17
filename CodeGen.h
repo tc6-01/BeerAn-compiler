@@ -57,7 +57,6 @@ public:
     // 查找符号表中变量的类型
     shared_ptr<WangIdentifier> getSymbolType(string name) const{
         for(auto it=blockStack.rbegin(); it!=blockStack.rend(); it++){
-//            cout << "(*it)->locals[" << name << "] = " << (*it)->locals[name] << endl;
             if( (*it)->types.find(name) != (*it)->types.end() ){
                 return (*it)->types[name];
             }
@@ -84,7 +83,7 @@ public:
     }
     // 声明函数，将函数加入函数表中
     void setFuncArg(string name, bool value){
-        cout << "Set " << name << " as func arg" << endl;
+        cout << "添加 " << name << " 作为函数参数" << endl;
         blockStack.back()->isFuncArg[name] = value;
     }
     // 

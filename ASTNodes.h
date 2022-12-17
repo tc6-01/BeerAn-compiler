@@ -355,8 +355,8 @@ class WangIf: public WangStatement{
 public:
 
     shared_ptr<WangExpression>  condition;
-    shared_ptr<WangBlock> trueBlock;          // should not be null
-    shared_ptr<WangBlock> falseBlock;         // can be null
+    shared_ptr<WangBlock> trueBlock;       
+    shared_ptr<WangBlock> falseBlock;      
 
 
     WangIf(){}
@@ -426,7 +426,6 @@ public:
     llvm::Value *codeGen(CodeGenContext &context) override ;
 
 };
-
 
 std::unique_ptr<WangExpression> LogError(const char* str);
 
