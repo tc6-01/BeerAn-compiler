@@ -1,0 +1,4 @@
+*.o
+BeerAn
+BeerAn*.cpp
+.vscode

@@ -7,12 +7,22 @@
 #include <llvm/Support/raw_ostream.h>
 #include "CodeGen.h"
 #include "ASTNodes.h"
-#include "TypeSystem.h"
 using legacy::PassManager;
 #define ISTYPE(value, id) (value->getType()->getTypeID() == id)
 
-static Type* TypeOf(const WangIdentifier & type, CodeGenContext& context){        // get llvm::type of variable base on its identifier
-    return context.typeSystem.getVarType(type);
+Type *CodeGenContext::getVarType(const WangIdentifier& type) {
+
+    string typeStr = type.name;
+    if( typeStr.compare("int") == 0 ){
+        return this->intTy; 
+    }
+    if( typeStr.compare("double") == 0 ){
+        return this->doubleTy;
+    }
+    return nullptr;
+}
+static Type* TypeOf(const WangIdentifier & type, CodeGenContext& context){   
+    return context.getVarType(type);
 }
 
 static Value* CastToBoolean(CodeGenContext& context, Value* condValue){
@@ -30,11 +40,11 @@ static Value* CastToBoolean(CodeGenContext& context, Value* condValue){
 // 生成block的中间代码-----即程序入口
 void CodeGenContext::generateCode(WangBlock& root) {
     cout << "##################################开始进入中间代码生成######################################" << endl;
-
+// reference:
     std::vector<Type*> sysArgs;
-    FunctionType* mainFuncType = FunctionType::get(Type::getVoidTy(this->llvmContext), makeArrayRef(sysArgs), false);
-    Function* mainFunc = Function::Create(mainFuncType, GlobalValue::ExternalLinkage, "BeerAn");
-    BasicBlock* block = BasicBlock::Create(this->llvmContext, "程序");
+    FunctionType* fp = FunctionType::get(Type::getVoidTy(this->llvmContext), makeArrayRef(sysArgs), false);
+    Function* func = Function::Create(fp, GlobalValue::ExternalLinkage, "BeerAn");
+    BasicBlock* block = BasicBlock::Create(this->llvmContext, "entry");
 
     pushBlock(block);
     Value* retValue = root.codeGen(*this);
@@ -51,8 +61,6 @@ void CodeGenContext::generateCode(WangBlock& root) {
 llvm::Value* WangAssignment::codeGen(CodeGenContext &context) {
     cout << "生成赋值语句" << this->lhs->name << " = " << endl;
     Value* dst = context.getSymbolValue(this->lhs->name);
-    auto dstType = context.getSymbolType(this->lhs->name);
-    string dstTypeStr = dstType->name;
     if( !dst ){
         return LogErrorV("变量未定义");
     }
@@ -81,39 +89,51 @@ llvm::Value* WangBinOp::codeGen(CodeGenContext &context) {
     if( !L || !R ){
         return nullptr;
     }
-    cout << "fp = " << ( fp ? "true" : "false" ) << endl;
-
     switch (this->op){
         case TPLUS:
+            cout<<"操作: "<<"+"<<endl;
             return fp ? context.builder.CreateFAdd(L, R, "加法错误") : context.builder.CreateAdd(L, R, "加法");
         case TMINUS:
+            cout<<"操作: "<<"-"<<endl;
             return fp ? context.builder.CreateFSub(L, R, "减法错误") : context.builder.CreateSub(L, R, "减法");
         case TMUL:
+            cout<<"操作: "<<"*"<<endl;
             return fp ? context.builder.CreateFMul(L, R, "乘法错误") : context.builder.CreateMul(L, R, "乘法");
         case TDIV:
+            cout<<"操作: "<<"/"<<endl;
             return fp ? context.builder.CreateFDiv(L, R, "除法错误") : context.builder.CreateSDiv(L, R, "除法");
         case TAND:
+            cout<<"操作: "<<"&"<<endl;
             return fp ? LogErrorV("操作有误") : context.builder.CreateAnd(L, R, "与操作");
         case TOR:
+            cout<<"操作: "<<"|"<<endl;
             return fp ? LogErrorV("操作有误") : context.builder.CreateOr(L, R, "或操作");
         case TXOR:
+            cout<<"操作: "<<"^"<<endl;
             return fp ? LogErrorV("操作有误") : context.builder.CreateXor(L, R, "异或操作");
         case TSHIFTL:
+            cout<<"操作: "<<">>"<<endl;
             return fp ? LogErrorV("操作有误") : context.builder.CreateShl(L, R, "左移");
         case TSHIFTR:
+            cout<<"操作: "<<"<<"<<endl;
             return fp ? LogErrorV("操作有误") : context.builder.CreateAShr(L, R, "右移");
-
         case TCLT:
+            cout<<"操作: "<<"<"<<endl;
             return fp ? context.builder.CreateFCmpULT(L, R, "比较错误") : context.builder.CreateICmpULT(L, R, "比较");
         case TCLE:
+            cout<<"操作: "<<"<="<<endl;
             return fp ? context.builder.CreateFCmpOLE(L, R, "比较错误") : context.builder.CreateICmpSLE(L, R, "比较");
         case TCGE:
+            cout<<"操作: "<<">="<<endl;
             return fp ? context.builder.CreateFCmpOGE(L, R, "比较错误") : context.builder.CreateICmpSGE(L, R, "比较");
         case TCGT:
+            cout<<"操作: "<<">"<<endl;
             return fp ? context.builder.CreateFCmpOGT(L, R, "比较错误") : context.builder.CreateICmpSGT(L, R, "比较");
         case TCEQ:
+            cout<<"操作: "<<"=="<<endl;
             return fp ? context.builder.CreateFCmpOEQ(L, R, "比较错误") : context.builder.CreateICmpEQ(L, R, "比较");
         case TCNE:
+            cout<<"操作: "<<"!="<<endl;
             return fp ? context.builder.CreateFCmpONE(L, R, "比较错误") : context.builder.CreateICmpNE(L, R, "比较");
         default:
             return LogErrorV("Unknown binary operator");
@@ -165,36 +185,31 @@ llvm::Value* WangFuncDel::codeGen(CodeGenContext &context) {
     FunctionType* functionType = FunctionType::get(retType, argTypes, false);
     Function* function = Function::Create(functionType, GlobalValue::ExternalLinkage, this->id->name.c_str(), context.theModule.get());
 
-    if( !this->isExternal ){
-        BasicBlock* basicBlock = BasicBlock::Create(context.llvmContext, "entry", function, nullptr);
+    BasicBlock* basicBlock = BasicBlock::Create(context.llvmContext, "entry", function, nullptr);
 
-        context.builder.SetInsertPoint(basicBlock);
-        context.pushBlock(basicBlock);
+    context.builder.SetInsertPoint(basicBlock);
+    context.pushBlock(basicBlock);
+    auto origin_arg = this->arguments->begin();
 
-        // declare function params
-        auto origin_arg = this->arguments->begin();
+    for(auto &ir_arg_it: function->args()){
+        ir_arg_it.setName((*origin_arg)->id->name);
+        Value* argAlloc;
+        argAlloc = (*origin_arg)->codeGen(context);
 
-        for(auto &ir_arg_it: function->args()){
-            ir_arg_it.setName((*origin_arg)->id->name);
-            Value* argAlloc;
-            argAlloc = (*origin_arg)->codeGen(context);
-
-            context.builder.CreateStore(&ir_arg_it, argAlloc, false);
-            context.setSymbolValue((*origin_arg)->id->name, argAlloc);
-            context.setSymbolType((*origin_arg)->id->name, (*origin_arg)->type);
-            context.setFuncArg((*origin_arg)->id->name, true);
-            origin_arg++;
-        }
-
-        this->block->codeGen(context);
-        if( context.getCurrentReturnValue() ){
-            context.builder.CreateRet(context.getCurrentReturnValue());
-        } else{
-            return LogErrorV("函数缺乏返回值");
-        }
-        context.popBlock();
-
+        context.builder.CreateStore(&ir_arg_it, argAlloc, false);
+        context.setSymbolValue((*origin_arg)->id->name, argAlloc);
+        context.setSymbolType((*origin_arg)->id->name, (*origin_arg)->type->name);
+        context.setFuncArg((*origin_arg)->id->name, true);
+        origin_arg++;
     }
+
+    this->block->codeGen(context);
+    if( context.getCurrentRetValue() ){
+        context.builder.CreateRet(context.getCurrentRetValue());
+    } else{
+        return LogErrorV("函数缺乏返回值");
+    }
+    context.popBlock();
     return function;
 }
 
@@ -219,14 +234,13 @@ llvm::Value* WangCallFunc::codeGen(CodeGenContext &context) {
 
 llvm::Value* WangVarDel::codeGen(CodeGenContext &context) {
     cout << "生成变量声明 " << this->type->name << " " << this->id->name << endl;
-    Type* type = TypeOf(*this->type, context);
+    Type* typeID = TypeOf(*this->type, context);
     Value* initial = nullptr;
 
     Value* inst = nullptr;
-    inst = context.builder.CreateAlloca(type);
-
-
-    context.setSymbolType(this->id->name, this->type);
+    inst = context.builder.CreateAlloca(typeID);
+    // 在变量声明的时候添加进入符号表
+    context.setSymbolType(this->id->name, this->type->name);
     context.setSymbolValue(this->id->name, inst);
 
     context.PrintSymTable();
@@ -241,7 +255,7 @@ llvm::Value* WangVarDel::codeGen(CodeGenContext &context) {
 llvm::Value* WangReturn::codeGen(CodeGenContext &context) {
     cout << "生成返回值" << endl;
     Value* returnValue = this->expression->codeGen(context);
-    context.setCurrentReturnValue(returnValue);
+    context.setCurrentRetValue(returnValue);
     return returnValue;
 }
 
@@ -253,9 +267,9 @@ llvm::Value* WangIf::codeGen(CodeGenContext &context) {
 
     condValue = CastToBoolean(context, condValue);
 
-    Function* theFunction = context.builder.GetInsertBlock()->getParent();      // the function where if statement is in
+    Function* CurFunc = context.builder.GetInsertBlock()->getParent();      // the function where if statement is in
 
-    BasicBlock *thenBB = BasicBlock::Create(context.llvmContext, "then", theFunction);
+    BasicBlock *thenBB = BasicBlock::Create(context.llvmContext, "then", CurFunc);
     BasicBlock *falseBB = BasicBlock::Create(context.llvmContext, "else");
     BasicBlock *mergeBB = BasicBlock::Create(context.llvmContext, "if后续");
 
@@ -280,7 +294,7 @@ llvm::Value* WangIf::codeGen(CodeGenContext &context) {
     }
 
     if( this->falseBlock ){
-        theFunction->getBasicBlockList().push_back(falseBB);    
+        CurFunc->getBasicBlockList().push_back(falseBB);    
         context.builder.SetInsertPoint(falseBB);           
 
         context.pushBlock(thenBB);
@@ -292,7 +306,7 @@ llvm::Value* WangIf::codeGen(CodeGenContext &context) {
         context.builder.CreateBr(mergeBB);
     }
 
-    theFunction->getBasicBlockList().push_back(mergeBB);   
+    CurFunc->getBasicBlockList().push_back(mergeBB);   
     context.builder.SetInsertPoint(mergeBB);     
 
     return nullptr;
@@ -300,9 +314,9 @@ llvm::Value* WangIf::codeGen(CodeGenContext &context) {
 
 llvm::Value* WangFOR::codeGen(CodeGenContext &context) {
     cout << "生成for循环语句" << endl;
-    Function* theFunction = context.builder.GetInsertBlock()->getParent();
+    Function* CurFunc = context.builder.GetInsertBlock()->getParent();
 
-    BasicBlock *block = BasicBlock::Create(context.llvmContext, "for循环", theFunction);
+    BasicBlock *block = BasicBlock::Create(context.llvmContext, "for循环", CurFunc);
     BasicBlock *after = BasicBlock::Create(context.llvmContext, "for后程序");
 
     // 初始化
@@ -336,7 +350,7 @@ llvm::Value* WangFOR::codeGen(CodeGenContext &context) {
     context.builder.CreateCondBr(condValue, block, after);
 
     // 插入for循环后续
-    theFunction->getBasicBlockList().push_back(after);
+    CurFunc->getBasicBlockList().push_back(after);
     context.builder.SetInsertPoint(after);
 
     return nullptr;

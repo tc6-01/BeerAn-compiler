@@ -1,19 +1,25 @@
 BeerAn {
-    void func (int a, int b){
-        int c = 3
+    int func (int a, int b){
+        double c = 3
         int d = 4
         c = a + b + d
-        return c * d
+        return  c * d
     }
     int a = func(2, 3)
     int main(){
         int i
+        int b = 3
+        b = func(a, b)
         for(i; i < 3; i+1){
-            if (a < 7){
+            for(i;i < 2;i+1){
+                a = i
+            }
+            if (a == 7){
                 if (b < 3){
                     a = a + b
                 }
             }
         }
+        return 0
     }
 }

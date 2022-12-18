@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.txt": "bat",
-        "random": "c"
+        "random": "c",
+        "iostream": "cpp"
     }
 }
