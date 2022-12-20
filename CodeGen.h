@@ -24,8 +24,6 @@ public:
     std::map<string, Value*> SymTable;
     // 与变量表对应的类型表
     std::map<string, string> types;   
-    // 函数表 
-    std::map<string, bool> FuncTable;
 };
 
 class CodeGenContext{
@@ -63,15 +61,6 @@ public:
         }
         return nullptr;
     }
-    // 判断调用函数是否声明
-    bool FuncTable(string name) const{
-        for(auto it=blockStack.rbegin(); it!=blockStack.rend(); it++){
-            if( (*it)->FuncTable.find(name) != (*it)->FuncTable.end() ){
-                return (*it)->FuncTable[name];
-            }
-        }
-        return false;
-    }
     // 添加变量进入符号表
     void setSymbolValue(string name, Value* value){
         blockStack.back()->SymTable[name] = value;
@@ -79,11 +68,6 @@ public:
     // 添加符号表中变量类型
     void setSymbolType(string name, string value){
         blockStack.back()->types[name] = value;
-    }
-    // 声明函数，将函数加入函数表中
-    void setFuncArg(string name, bool value){
-        cout << "添加 " << name << " 作为函数参数" << endl;
-        blockStack.back()->FuncTable[name] = value;
     }
     // 基本块儿进栈
     void pushBlock(BasicBlock * block){

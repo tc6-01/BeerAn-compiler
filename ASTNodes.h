@@ -135,32 +135,6 @@ public:
 	virtual llvm::Value* codeGen(CodeGenContext& context) override ;
 };
 
-// 调用函数节点
-class WangCallFunc: public WangExpression {
-public:
-	const shared_ptr<WangIdentifier> id;
-	shared_ptr<ExpressionList> arguments = make_shared<ExpressionList>();
-	// 有参数的函数调用
-	WangCallFunc(const shared_ptr<WangIdentifier> id, shared_ptr<ExpressionList> arguments): id(id), arguments(arguments) {}
-	// 无参数函数调用
-	WangCallFunc(const shared_ptr<WangIdentifier> id): id(id) {}
-
-	string getTypeName() const override {
-		return "WangCallFunc";
-	}
-
-	void print(string prefix) const override{
-		string nextPrefix = prefix+this->m_PREFIX;
-		cout << prefix << getTypeName() << this->m_DELIM << endl;
-		this->id->print(nextPrefix);
-		for(auto it=arguments->begin(); it!=arguments->end(); it++){
-			(*it)->print(nextPrefix);
-		}
-	}
-
-	virtual llvm::Value* codeGen(CodeGenContext& context) override ;
-};
-
 // 算术操作节点
 class WangBinOp : public WangExpression {
 public:
@@ -305,6 +279,32 @@ public:
 
     virtual llvm::Value* codeGen(CodeGenContext& context) override ;
 
+};
+
+// 调用函数节点
+class WangCallFunc: public WangExpression {
+public:
+	const shared_ptr<WangIdentifier> id;
+	shared_ptr<ExpressionList> arguments = make_shared<ExpressionList>();
+	// 有参数的函数调用
+	WangCallFunc(const shared_ptr<WangIdentifier> id, shared_ptr<ExpressionList> arguments): id(id), arguments(arguments) {}
+	// 无参数函数调用
+	WangCallFunc(const shared_ptr<WangIdentifier> id): id(id) {}
+
+	string getTypeName() const override {
+		return "WangCallFunc";
+	}
+
+	void print(string prefix) const override{
+		string nextPrefix = prefix+this->m_PREFIX;
+		cout << prefix << getTypeName() << this->m_DELIM << endl;
+		this->id->print(nextPrefix);
+		for(auto it=arguments->begin(); it!=arguments->end(); it++){
+			(*it)->print(nextPrefix);
+		}
+	}
+
+	virtual llvm::Value* codeGen(CodeGenContext& context) override ;
 };
 
 // if语句节点
