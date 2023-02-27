@@ -7,6 +7,7 @@ flex & bison & llvm & c++14
 ```shell
     git clone https://github.com/tc6-01/BeerAn-compiler.git
     cd BeerAn-compiler
+    apt install flex bison llvm
     make
     ./BeerAn < BeerAn.bc > BeerAn.txt
     cat BeerAn.txt

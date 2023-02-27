@@ -1,4 +1,5 @@
 *.o
 BeerAn
+BeerAn.txt
 BeerAn*.cpp
 .vscode
