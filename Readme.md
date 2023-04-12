@@ -2,6 +2,12 @@
 
 ## content：
 flex & bison & llvm & c++14
+如果没有安装，是不能直接运行的，可以尝试着进行安装后进行，另外，运行环境为Linux系统。
+
+安装命令
+```shell
+   sudo apt-get install flex bison llvm gcc
+```
 
 ## usage:
 ```shell
